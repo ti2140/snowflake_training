@@ -58,6 +58,16 @@ Resources:
             Resource:
               - !Sub 'arn:aws:s3:::${TraineeUserName}-bucket'
               - !Sub 'arn:aws:s3:::${TraineeUserName}-bucket/*'
+          # --- [追加] LambdaロールにS3アクセスを明示許可 ---
+          - Sid: AllowLambdaAccess
+            Effect: Allow
+            Principal:
+              AWS: !GetAtt LambdaExecutionRole.Arn
+            Action:
+              - 's3:GetObject'
+              - 's3:GetObjectVersion'
+              - 's3:PutObject'
+            Resource: !Sub 'arn:aws:s3:::${TraineeUserName}-bucket/*'
           - Sid: DenyOthers
             Effect: Deny
             NotPrincipal:
@@ -68,6 +78,9 @@ Resources:
                 - 'arn:aws:iam::875180007397:user/CHIHIRO_SHIRASAKA'
                 - 'arn:aws:iam::875180007397:user/TAIGA_ISHII'
                 - 'arn:aws:iam::875180007397:root'
+                # --- [追加] LambdaロールをDeny対象から除外 ---
+                - !GetAtt LambdaExecutionRole.Arn
+                - !Sub 'arn:aws:sts::875180007397:assumed-role/${TraineeUserName}-lambda-execution-role/${TraineeUserName}-eml-processor'
             Action: 's3:*'
             Resource:
               - !Sub 'arn:aws:s3:::${TraineeUserName}-bucket'
@@ -133,6 +146,8 @@ Resources:
       FunctionName: !GetAtt EmlProcessorFunction.Arn
       Principal: s3.amazonaws.com
       SourceArn: !Sub 'arn:aws:s3:::${TraineeUserName}-bucket'
+      # --- [追加] SourceAccountを明示指定 ---
+      SourceAccount: '875180007397'
 
 Outputs:
   BucketName:
