@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Bucket Policy for CloudFormation Templates Bucket'
+
+Resources:
+  CfnTemplatesBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: 'cloudformation-templates-mybucket'
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowAdminFullAccess
+            Effect: Allow
+            Principal:
+              AWS:
+                - 'arn:aws:iam::875180007397:user/SHINJI_KUROSAKI'
+                - 'arn:aws:iam::875180007397:user/TAKUYA_INOUE'
+                - 'arn:aws:iam::875180007397:user/CHIHIRO_SHIRASAKA'
+                - 'arn:aws:iam::875180007397:user/TAIGA_ISHII'
+            Action: 's3:*'
+            Resource:
+              - 'arn:aws:s3:::cloudformation-templates-mybucket'
+              - 'arn:aws:s3:::cloudformation-templates-mybucket/*'
+          - Sid: AllowTraineeGetObject
+            Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::875180007397:root'
+            Action:
+              - 's3:GetObject'
+              - 's3:GetObjectVersion'
+            Resource: 'arn:aws:s3:::cloudformation-templates-mybucket/trainee/*'
+          # --- [追加] traineeフォルダへのアップロード許可 ---
+          - Sid: AllowTraineePutObject
+            Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::875180007397:root'
+            Action:
+              - 's3:PutObject'
+              - 's3:DeleteObject'
+            Resource: 'arn:aws:s3:::cloudformation-templates-mybucket/trainee/*'
+          - Sid: AllowTraineeListTraineeFolder
+            Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::875180007397:root'
+            Action: 's3:ListBucket'
+            Resource: 'arn:aws:s3:::cloudformation-templates-mybucket'
+            Condition:
+              StringLike:
+                s3:prefix:
+                  - 'trainee/'
+                  - 'trainee/*'
+          - Sid: AllowTraineeGetBucketLocation
+            Effect: Allow
+            Principal:
+              AWS: 'arn:aws:iam::875180007397:root'
+            Action: 's3:GetBucketLocation'
+            Resource: 'arn:aws:s3:::cloudformation-templates-mybucket'
+          - Sid: DenyAdminFolderListToTrainees
+            Effect: Deny
+            NotPrincipal:
+              AWS:
+                - 'arn:aws:iam::875180007397:user/SHINJI_KUROSAKI'
+                - 'arn:aws:iam::875180007397:user/TAKUYA_INOUE'
+                - 'arn:aws:iam::875180007397:user/CHIHIRO_SHIRASAKA'
+                - 'arn:aws:iam::875180007397:user/TAIGA_ISHII'
+                - 'arn:aws:iam::875180007397:root'
+            Action: 's3:ListBucket'
+            Resource: 'arn:aws:s3:::cloudformation-templates-mybucket'
+            Condition:
+              StringLike:
+                s3:prefix:
+                  - 'admin/'
+                  - 'admin/*'
+          - Sid: DenyAdminFolderGetToTrainees
+            Effect: Deny
+            NotPrincipal:
+              AWS:
+                - 'arn:aws:iam::875180007397:user/SHINJI_KUROSAKI'
+                - 'arn:aws:iam::875180007397:user/TAKUYA_INOUE'
+                - 'arn:aws:iam::875180007397:user/CHIHIRO_SHIRASAKA'
+                - 'arn:aws:iam::875180007397:user/TAIGA_ISHII'
+                - 'arn:aws:iam::875180007397:root'
+            Action:
+              - 's3:GetObject'
+              - 's3:GetObjectVersion'
+            Resource: 'arn:aws:s3:::cloudformation-templates-mybucket/admin/*'
