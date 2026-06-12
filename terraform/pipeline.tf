@@ -2,11 +2,11 @@
 # Storage Integration定義
 # ==========================================
 resource "snowflake_storage_integration" "s3_int" {
-  name                      = "S3_INT"
-  type                      = "EXTERNAL_STAGE"
-  enabled                   = true
-  storage_provider          = "S3"
-  storage_aws_role_arn      = var.snowflake_aws_role_arn
+  name                 = "S3_INT"
+  type                 = "EXTERNAL_STAGE"
+  enabled              = true
+  storage_provider     = "S3"
+  storage_aws_role_arn = var.snowflake_aws_role_arn
   storage_allowed_locations = [
     var.s3_bucket_url,
     "s3://trainee00-bucket/messages/",
@@ -20,7 +20,7 @@ resource "snowflake_storage_integration" "s3_int" {
     "s3://trainee08-bucket/messages/",
     "s3://trainee09-bucket/messages/",
   ]
-  comment                   = "Storage integration for S3 mail data."
+  comment = "Storage integration for S3 mail data."
 }
 
 # ==========================================
