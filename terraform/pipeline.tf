@@ -1,7 +1,7 @@
 # ==========================================
 # Storage Integration定義
 # ==========================================
-resource "snowflake_storage_integration" "s3_int" {
+resource "snowflake_storage_integration" "s3_int_v2" {
   name                 = "S3_INT"
   type                 = "EXTERNAL_STAGE"
   enabled              = true
