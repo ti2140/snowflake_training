@@ -7,7 +7,19 @@ resource "snowflake_storage_integration" "s3_int" {
   enabled                   = true
   storage_provider          = "S3"
   storage_aws_role_arn      = var.snowflake_aws_role_arn
-  storage_allowed_locations = [var.s3_bucket_url]
+  storage_allowed_locations = [
+    var.s3_bucket_url,
+    "s3://trainee00-bucket/messages/",
+    "s3://trainee01-bucket/messages/",
+    "s3://trainee02-bucket/messages/",
+    "s3://trainee03-bucket/messages/",
+    "s3://trainee04-bucket/messages/",
+    "s3://trainee05-bucket/messages/",
+    "s3://trainee06-bucket/messages/",
+    "s3://trainee07-bucket/messages/",
+    "s3://trainee08-bucket/messages/",
+    "s3://trainee09-bucket/messages/",
+  ]
   comment                   = "Storage integration for S3 mail data."
 }
 
