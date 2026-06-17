@@ -18,7 +18,7 @@ resource "snowflake_storage_integration" "s3_int_training" {
   type                 = "EXTERNAL_STAGE"
   enabled              = true
   storage_provider     = "S3"
-  storage_aws_role_arn = "arn:aws:iam::875180007397:role/<研修用ロール名>"
+  storage_aws_role_arn = "arn:aws:iam::875180007397:role/snowflake-storage-integration-role"
   storage_allowed_locations = [
     "s3://trainee00-bucket/messages/",
     "s3://trainee01-bucket/messages/",

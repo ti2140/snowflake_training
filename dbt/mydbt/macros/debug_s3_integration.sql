@@ -16,7 +16,7 @@
   {% endif %}
   {% do log("", info=True) %}
 
-  -- 2) DESC STAGE
+  -- 2) DESC STAGE (全プロパティを出力)
   {% set stage_fqn = target.database ~ ".RAW.ST_S3_MAIL" %}
   {% do log("[2/3] DESC STAGE " ~ stage_fqn, info=True) %}
   {% do log("-" * 60, info=True) %}
@@ -25,13 +25,12 @@
   {% set stage_result = run_query("DESC STAGE " ~ stage_fqn) %}
   {% if stage_result %}
     {% for row in stage_result.rows %}
-      {% if row[0] in ['URL', 'STORAGE_INTEGRATION'] %}
-        {% do log("  " ~ (row[0] | string) ~ " = " ~ (row[3] | string), info=True) %}
-        {% if row[0] == 'URL' %}
-          {% set stage_url = row[3] | string | replace('["', '') | replace('"]', '') %}
-        {% elif row[0] == 'STORAGE_INTEGRATION' %}
-          {% set stage_int = row[3] | string %}
-        {% endif %}
+      {# DESC STAGE columns: parent_property(0), property(1), property_type(2), property_value(3), property_default(4) #}
+      {% do log("  [" ~ (row[0] | string) ~ "] " ~ (row[1] | string) ~ " = " ~ (row[3] | string), info=True) %}
+      {% if row[1] == 'URL' %}
+        {% set stage_url = row[3] | string | replace('["', '') | replace('"]', '') %}
+      {% elif row[1] == 'STORAGE_INTEGRATION' %}
+        {% set stage_int = row[3] | string %}
       {% endif %}
     {% endfor %}
   {% endif %}
@@ -40,6 +39,8 @@
   -- 3) SYSTEM$VALIDATE_STORAGE_INTEGRATION
   {% do log("[3/3] SYSTEM$VALIDATE_STORAGE_INTEGRATION", info=True) %}
   {% do log("-" * 60, info=True) %}
+  {% do log("  Using URL = " ~ (stage_url | string), info=True) %}
+  {% do log("  Using INTEGRATION = " ~ (stage_int | string), info=True) %}
   {% if stage_url and stage_int %}
     {% set v_query %}
       SELECT SYSTEM$VALIDATE_STORAGE_INTEGRATION(
