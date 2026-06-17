@@ -89,14 +89,6 @@ jobs:
           pip install --no-cache-dir dbt-snowflake
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             dbt debug --profiles-dir . || true
-
-            echo ""
-            echo "============================================================"
-            echo "DEBUG STEP: Storage Integration Diagnostics"
-            echo "============================================================"
-            dbt run-operation debug_s3_integration --profiles-dir . || true
-            echo ""
-            
             dbt run-operation load_mails_raw --profiles-dir .
             dbt seed --profiles-dir . 
             dbt run --profiles-dir .
