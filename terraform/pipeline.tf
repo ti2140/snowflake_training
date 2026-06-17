@@ -8,7 +8,18 @@ resource "snowflake_storage_integration" "s3_int" {
   storage_provider     = "S3"
   storage_aws_role_arn = var.snowflake_aws_role_arn
   storage_allowed_locations = [
-    var.s3_bucket_url,
+    var.s3_bucket_url
+  ]
+  comment = "Storage integration for S3 mail data."
+}
+
+resource "snowflake_storage_integration" "s3_int_training" {
+  name                 = "S3_INT_TRAINING"
+  type                 = "EXTERNAL_STAGE"
+  enabled              = true
+  storage_provider     = "S3"
+  storage_aws_role_arn = "arn:aws:iam::875180007397:role/snowflake-storage-integration-role"
+  storage_allowed_locations = [
     "s3://trainee00-bucket/messages/",
     "s3://trainee01-bucket/messages/",
     "s3://trainee02-bucket/messages/",
@@ -18,9 +29,8 @@ resource "snowflake_storage_integration" "s3_int" {
     "s3://trainee06-bucket/messages/",
     "s3://trainee07-bucket/messages/",
     "s3://trainee08-bucket/messages/",
-    "s3://trainee09-bucket/messages/",
+    "s3://trainee09-bucket/messages/"
   ]
-  comment = "Storage integration for S3 mail data."
 }
 
 # ==========================================
